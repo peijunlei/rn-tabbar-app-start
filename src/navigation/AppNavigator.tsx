@@ -1,27 +1,35 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { TabNavigator } from './TabNavigator';
-import  DetailScreen  from '../screens/Detail';
+import { MyHeader } from '../components/Header';
+import { getHeaderTitle, Header } from '@react-navigation/elements';
+import routes from './routes';
 
 const Stack = createNativeStackNavigator();
 
 export function AppNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName="MainTabs"
       screenOptions={{
-        headerShown: false,
+        headerTitleAlign: 'center',
+        // headerShown: false,
+        // header: ({ options, route, back }) => (
+        //   <Header
+        //     {...options}
+        //     back={back}
+        //     title={getHeaderTitle(options, route.name)}
+        //   />
+        // ),
       }}>
-      <Stack.Screen 
-        name="MainTabs" 
-        component={TabNavigator} 
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen 
-        name="Detail" 
-        component={DetailScreen} 
-        options={{ title: '详情页' }} 
-      />
+        {
+          routes.map((route) => (
+            <Stack.Screen 
+              key={route.name}
+              name={route.name}
+              component={route.component}
+              options={{ title: route.title, headerShown: route.name === 'Home' ? false : true }}
+            />
+          ))
+        }
     </Stack.Navigator>
   );
 } 

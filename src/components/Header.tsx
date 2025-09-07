@@ -37,6 +37,7 @@ type Props = HeaderOptions & {
 export function MyHeader(props: Props) {
   const { showBackButton = true } = props;
   const navigation = useNavigation<any>();
+  return null
   return (
     <Header
       {...props}

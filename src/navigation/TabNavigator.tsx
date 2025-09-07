@@ -1,11 +1,11 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/Home';
 import CategoryScreen from '../screens/Category';
 import MessageScreen from '../screens/Message';
 import ProfileScreen from '../screens/Profile';
-
+// @ts-ignore
+import Icon from 'react-native-vector-icons/Ionicons';
 const Tab = createBottomTabNavigator();
 
 function getTabBarIcon(route: any, { color, size }: { color: string; size: number }) {
@@ -29,11 +29,12 @@ function getTabBarIcon(route: any, { color, size }: { color: string; size: numbe
   return <Icon name={iconName} size={size} color={color} />;
 }
 
-export function TabNavigator() {
+export default function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerShown: false,
+        // headerShown: false,
+        headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => getTabBarIcon(route, { color, size }),
       })}
     >
