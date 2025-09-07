@@ -4,6 +4,7 @@ import { MyHeader } from '../components/Header';
 import { getHeaderTitle, Header } from '@react-navigation/elements';
 import routes from './routes';
 import ModalScreen from '../modal-screen';
+import LoginModal from '../screens/LoginModal';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,14 +13,6 @@ export function AppNavigator() {
     <Stack.Navigator
       screenOptions={{
         headerTitleAlign: 'center',
-        // headerShown: false,
-        // header: ({ options, route, back }) => (
-        //   <Header
-        //     {...options}
-        //     back={back}
-        //     title={getHeaderTitle(options, route.name)}
-        //   />
-        // ),
       }}>
       <Stack.Group>
         {
@@ -34,7 +27,16 @@ export function AppNavigator() {
         }
       </Stack.Group>
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
+        <Stack.Screen 
+          name="Modal" 
+          component={ModalScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="LoginModal" 
+          component={LoginModal}
+          options={{ headerShown: false }}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );
