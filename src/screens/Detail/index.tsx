@@ -1,7 +1,8 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, BackHandler, Alert } from 'react-native';
 import { MyHeader } from '../../components/Header';
+import { Button } from '@react-navigation/elements';
 
 export default function DetailScreen() {
   const navigation = useNavigation<any>();
@@ -16,6 +17,9 @@ export default function DetailScreen() {
       <MyHeader title="详情" showBackButton/>
       <View style={styles.container}>
         <Text style={styles.text}>这是详情页</Text>
+        <Button onPress={() => navigation.navigate('Modal')}>
+          Go to Modal
+        </Button>
       </View>
     </>
   );

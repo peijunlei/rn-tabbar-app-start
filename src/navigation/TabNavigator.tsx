@@ -33,7 +33,7 @@ export default function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        // headerShown: false,
+        headerShown: false,
         headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => getTabBarIcon(route, { color, size }),
       })}

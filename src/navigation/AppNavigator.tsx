@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MyHeader } from '../components/Header';
 import { getHeaderTitle, Header } from '@react-navigation/elements';
 import routes from './routes';
+import ModalScreen from '../modal-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,9 +21,10 @@ export function AppNavigator() {
         //   />
         // ),
       }}>
+      <Stack.Group>
         {
           routes.map((route) => (
-            <Stack.Screen 
+            <Stack.Screen
               key={route.name}
               name={route.name}
               component={route.component}
@@ -30,6 +32,10 @@ export function AppNavigator() {
             />
           ))
         }
+      </Stack.Group>
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen name="Modal" component={ModalScreen} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 } 
