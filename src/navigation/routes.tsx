@@ -1,5 +1,6 @@
 import TabNavigator from './TabNavigator';
 import DetailScreen from '../screens/Detail';
+import MallScreen from '../screens/Mall';
 
 const routes = [
   {
@@ -11,6 +12,11 @@ const routes = [
     name: 'Detail',
     title: '详情',
     component: DetailScreen,
+  },
+  {
+    name: 'Mall',
+    title: '商城',
+    component: MallScreen,
   },
 ]
 

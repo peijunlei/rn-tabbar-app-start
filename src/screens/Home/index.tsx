@@ -11,11 +11,14 @@ export default function HomeScreen() {
       <MyHeader title="首页" showBackButton={false} />
       <View style={styles.container}>
         <Text style={styles.text}>首页</Text>
-        <Button screen="Detail" params={{ userId: 'jane' }}>
+        <Button screen="Detail" params={{}}>
           Go to Detail
         </Button>
         <Button onPress={() => navigation.navigate('Modal')}>
           Go to Modal
+        </Button>
+        <Button screen="Mall" params={{}}>
+          Go to Mall
         </Button>
       </View>
     </>
