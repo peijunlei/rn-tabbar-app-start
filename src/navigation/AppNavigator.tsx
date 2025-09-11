@@ -21,7 +21,7 @@ export function AppNavigator() {
               key={route.name}
               name={route.name}
               component={route.component}
-              options={{ title: route.title, headerShown: route.name === 'Home' ? false : true }}
+              options={{ title: route.title, headerShown: route.headerShown===false ? false : route.name === 'Home' ? false : true }}
             />
           ))
         }
