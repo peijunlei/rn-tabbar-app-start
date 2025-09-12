@@ -1,14 +1,27 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import { MyHeader } from '../../components/Header';
+import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 
 export default function CategoryScreen() {
+  const width = useSharedValue(100);
+  const handlePress = () => {
+    width.value = withSpring(width.value + 50);
+  };
+
   return (
     <>
-      <MyHeader title="分类" showBackButton={false}/>
-      <View style={styles.container}>
-        <Text style={styles.text}>分类</Text>
-      </View>
+      <MyHeader title="分类" showBackButton={false} />
+      <Animated.View
+        style={{
+          width: width,
+          height: 100,
+          borderRadius: 10,
+          backgroundColor: 'violet',
+        }}
+      >
+      </Animated.View>
+      <Button onPress={handlePress} title="Click me" />
     </>
   );
 }
