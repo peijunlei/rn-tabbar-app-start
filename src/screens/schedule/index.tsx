@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { MyHeader } from '../../components/Header';
-import Animated, { FadeInDown, FadeOut, FadeOutUp, LinearTransition, useSharedValue, withSpring } from 'react-native-reanimated';
-import { Pressable, ScrollView, Switch } from 'react-native-gesture-handler';
+import Animated, { FadeIn, FadeInDown, FadeInLeft, FadeInUp, FadeOut, FadeOutDown, FadeOutLeft, FadeOutRight, FadeOutUp, interpolateColor, LinearTransition, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { FlatList, Pressable, ScrollView, Switch } from 'react-native-gesture-handler';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -15,48 +15,63 @@ const _startHour = 8
 
 
 
-const _damping = 14
-const _entering = FadeInDown.springify().damping(_damping)
-const _exiting = FadeOut.springify().damping(_damping)
+const _damping = 16
+// hour block entering
+const _entering = FadeInLeft.springify().damping(_damping)
+const _exiting = FadeOutRight.springify().damping(_damping)
+// day block entering
+const _dayEntering = FadeIn.springify().damping(_damping)
+const _dayExiting = FadeOut.springify().damping(_damping)
+
 const _layout = LinearTransition.springify().damping(_damping)
 
+const AnimatedPressable = Animated.createAnimatedComponent(TouchableOpacity)
 function Day({ day }: { day: typeof days[number] }) {
   const [isEnabled, setIsEnabled] = useState(false)
-  return (
-    <View style={[styles.day, {
-      backgroundColor: isEnabled ? 'transparent' : _color
-    }]}>
-      <View style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-        <Text>{day}</Text>
-        <Switch
-          value={isEnabled}
-          onValueChange={(value) => setIsEnabled(value)}
-          trackColor={{ true: '#09c' }}
-        />
+  const bgColor = useSharedValue(_color)
 
-      </View>
-      {
-        isEnabled && (
-          <DayBlock />
-        )
-      }
-    </View>
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: bgColor.value,
+    }
+  })
+  return (
+    <Animated.View layout={_layout}>
+      <Animated.View
+        style={[styles.day, animatedStyle]}>
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+          <Text>{day}</Text>
+          <Switch
+            value={isEnabled}
+            onValueChange={(value) => {
+              setIsEnabled(value)
+              bgColor.value = withTiming(value ? 'transparent' : _color)
+            }}
+            trackColor={{ true: '#09c' }}
+          />
+
+        </View>
+        {
+          isEnabled && (
+            <Animated.View layout={_layout} exiting={_dayExiting} entering={_dayEntering}>
+              <DayBlock />
+            </Animated.View>
+          )
+        }
+      </Animated.View>
+    </Animated.View>
   )
 }
 
 function DayBlock() {
   const [hours, setHours] = useState<number[]>([_startHour])
   return (
-    <Animated.View
-      entering={_entering}
-      exiting={_exiting}
-      style={{
-        gap: _space,
-      }}>
+    <View
+      style={{ gap: _space }}>
       {
         hours.map((hour, index) => (
           <Animated.View
@@ -73,14 +88,14 @@ function DayBlock() {
             <HourBlock hour={hour} />
             <Text>To:</Text>
             <HourBlock hour={hour + 1} />
-            <Pressable
+            <TouchableOpacity
+              activeOpacity={0.8}
               onPress={() => {
                 setHours(hours.filter((h) => h !== hour))
               }}
             >
               <View style={{
-                aspectRatio: 1,
-                height: 24,
+                padding: _space / 2,
                 backgroundColor: _color,
                 borderRadius: _borderRadius,
                 justifyContent: 'center',
@@ -88,11 +103,13 @@ function DayBlock() {
               }}>
                 <Icon name="trash" size={16} color="#666" />
               </View>
-            </Pressable>
+            </TouchableOpacity>
           </Animated.View>
         ))
       }
-      <Pressable
+      <AnimatedPressable
+        activeOpacity={0.8}
+        layout={_layout}
         onPress={() => {
           if (hours.length === 0) {
             setHours([_startHour])
@@ -113,8 +130,8 @@ function DayBlock() {
           <Icon name="add" size={16} color="#333" />
           <Text style={{ fontSize: 14, color: '#333' }}>Add More</Text>
         </View>
-      </Pressable>
-    </Animated.View>
+      </AnimatedPressable>
+    </View>
 
   )
 }
@@ -148,9 +165,13 @@ export default function ScheduleScreen() {
   return (
     <>
       <MyHeader title="日程安排" showBackButton={false} />
-      <View style={styles.container} >
-        {days.map((day, index) => <Day key={`${day}-${index}`} day={day} />)}
-      </View>
+      <FlatList
+        contentContainerStyle={{ paddingBottom: _space }}
+        style={styles.container}
+        data={days}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item, index }) => <Day key={`${item}-${index}`} day={item} />}
+      />
     </>
   );
 }
@@ -159,6 +180,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: _space, gap: _space, backgroundColor: '#fff' },
   day: {
     gap: _space,
+    marginBottom: _space,
     flexDirection: 'column',
     padding: _space,
     borderWidth: 1,
