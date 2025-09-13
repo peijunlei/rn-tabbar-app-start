@@ -12,6 +12,7 @@ const routes = [
     name: 'Detail',
     title: '详情',
     component: DetailScreen,
+    headerShown: false,
   },
   {
     name: 'Mall',
