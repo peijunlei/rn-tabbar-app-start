@@ -109,6 +109,8 @@ function DayBlock() {
       }
       <AnimatedPressable
         activeOpacity={0.8}
+        entering={_entering}
+        exiting={_exiting}
         layout={_layout}
         onPress={() => {
           if (hours.length === 0) {
