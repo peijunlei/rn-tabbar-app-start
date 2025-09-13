@@ -20,6 +20,9 @@ export default function HomeScreen() {
         <Button screen="Mall" params={{}}>
           Go to Mall
         </Button>
+        <Button screen="Schedule" params={{}}>
+          Go to Schedule
+        </Button>
       </View>
     </>
   );
