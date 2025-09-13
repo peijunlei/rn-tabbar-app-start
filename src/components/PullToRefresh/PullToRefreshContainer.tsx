@@ -1,8 +1,16 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PullToRefreshContainerProps, RefreshState } from './types';
-import { runOnJS } from 'react-native-reanimated';
+import { 
+  runOnJS, 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring,
+  useAnimatedReaction, 
+  withTiming
+} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import DefaultIndicator from './PullToRefreshIndicator';
 
 export default function PullToRefreshContainer({
@@ -10,24 +18,43 @@ export default function PullToRefreshContainer({
   onRefresh,
   threshold = 80,
 }: PullToRefreshContainerProps) {
-  const [translateY, setTranslateY] = useState(0);
+  const translateY = useSharedValue(0);
   const [state, setState] = useState(RefreshState.IDLE);
+  const [progress, setProgress] = useState(0);
 
-  // 使用 useMemo 计算 progress，基于 translateY
-  const progress = useMemo(() => {
-    return Math.min(translateY / threshold, 1);
-  }, [translateY, threshold]);
+  // 复位动画配置
+  const resetAnimationConfig = {
+    damping: 20,
+    stiffness: 200,
+    mass: 0.8,
+  };
+
+  // 使用 useAnimatedReaction 同步 progress
+  useAnimatedReaction(
+    () => translateY.value,
+    (currentValue) => {
+      const newProgress = Math.min(currentValue / threshold, 1);
+      runOnJS(setProgress)(newProgress);
+    }
+  );
+
+  // 动画样式
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+    };
+  });
 
   const onTriggerRefresh = async () => {
     setState(RefreshState.REFRESHING);
     await onRefresh();
     setState(RefreshState.IDLE);
-    setTranslateY(0);
+    translateY.value = withSpring(0, resetAnimationConfig);
   };
-  // 简化的手势处理
+  
   const panGesture = Gesture.Pan()
-    .activeOffsetY([5, 9999]) // 最小手势阈值，避免误触
-    .failOffsetX([-10, 10])   // 横向滑动失败
+    .activeOffsetY([5, 9999])
+    .failOffsetX([-10, 10])
     .onStart(() => {
       if (state === RefreshState.REFRESHING) return;
     })
@@ -35,12 +62,10 @@ export default function PullToRefreshContainer({
       if (state === RefreshState.REFRESHING) return;
       const pullDistance = event.translationY;
       if (pullDistance > 0) {
-        // ✅ 无 maxPullDistance，用指数阻尼
-        const dampingFactor = 1.2; // 可以试试 1.5 ~ 3
+        const dampingFactor = 1.2;
         const dampedDistance = threshold * dampingFactor * (1 - Math.exp(-pullDistance / threshold));
 
-        runOnJS(setTranslateY)(dampedDistance);
-        // 移除 setProgress 调用，progress 现在通过 useMemo 自动计算
+        translateY.value = dampedDistance;
         if (dampedDistance > 0 && state === RefreshState.IDLE) {
           runOnJS(setState)(RefreshState.PULLING);
         }
@@ -48,18 +73,17 @@ export default function PullToRefreshContainer({
     })
     .onEnd((event) => {
       if (state === RefreshState.REFRESHING) return;
-      if (translateY >= threshold) {
+      if (translateY.value >= threshold) {
         runOnJS(onTriggerRefresh)();
       } else {
         runOnJS(setState)(RefreshState.IDLE);
-        runOnJS(setTranslateY)(0);
+        translateY.value = withSpring(0, resetAnimationConfig);
       }
     });
-  console.log('translateY', translateY)
+  
   return (
     <GestureDetector gesture={panGesture}>
-      <View style={[styles.container, { transform: [{ translateY }] }]}>
-        {/* 指示器区域 */}
+      <Animated.View style={[styles.container, animatedStyle]}>
         <View style={styles.indicatorContainer}>
           <DefaultIndicator
             state={state}
@@ -67,15 +91,10 @@ export default function PullToRefreshContainer({
           />
         </View>
 
-        {/* 内容区域 */}
-        <View
-          style={[
-            styles.contentContainer,
-          ]}
-        >
+        <View style={styles.contentContainer}>
           {children}
         </View>
-      </View>
+      </Animated.View>
     </GestureDetector>
   );
 };

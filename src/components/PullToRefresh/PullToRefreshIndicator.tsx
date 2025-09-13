@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { PullToRefreshIndicatorProps } from './types';
-
 
 /**
  * 默认下拉刷新指示器
- * 简单的文字提示指示器
+ * 带 loading icon 的指示器
  */
 export default function DefaultIndicator({
   state,
@@ -29,11 +28,21 @@ export default function DefaultIndicator({
     if (state === 'refreshing') return 1;
     return Math.min(progress, 1); // 渐显效果
   };
+
   const opacity = useMemo(() => {
     return getIndicatorOpacity();
   }, [progress, state]);
+
   return (
     <View style={[styles.container, { opacity }]}>
+      {/* 刷新时显示 loading icon */}
+      {state === 'refreshing' && (
+        <ActivityIndicator 
+          size="small" 
+          color="#666" 
+          style={styles.loadingIcon}
+        />
+      )}
       <Text style={styles.text}>{getIndicatorText()}</Text>
     </View>
   );
@@ -44,6 +53,10 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row', // 改为横向布局
+  },
+  loadingIcon: {
+    marginRight: 8, // icon 和文字之间的间距
   },
   text: {
     fontSize: 14,

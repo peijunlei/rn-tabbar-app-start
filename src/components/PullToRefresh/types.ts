@@ -15,7 +15,7 @@ export interface PullToRefreshContainerProps {
   /** 子组件 */
   children: React.ReactNode;
   /** 下拉刷新回调 */
-  onRefresh: () => Promise<void>;
+  onRefresh: () => Promise<unknown>;
   /** 下拉刷新阈值 */
   threshold?: number;
 }
