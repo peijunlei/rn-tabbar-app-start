@@ -1,15 +1,47 @@
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  Easing
+} from 'react-native-reanimated';
+import Icon from 'react-native-vector-icons/Feather';
 import { PullToRefreshIndicatorProps } from './types';
 
 /**
  * 默认下拉刷新指示器
- * 带 loading icon 的指示器
+ * 带中心旋转动画的 loading icon
  */
 export default function DefaultIndicator({
   state,
   progress,
 }: PullToRefreshIndicatorProps) {
+  const rotation = useSharedValue(0);
+
+  // 刷新时开始旋转动画
+  React.useEffect(() => {
+    if (state === 'refreshing') {
+      rotation.value = withRepeat(
+        withTiming(360, {
+          duration: 1000,
+          easing: Easing.linear,
+        }),
+        -1, // 无限循环
+        false
+      );
+    } else {
+      rotation.value = 0;
+    }
+  }, [state]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${rotation.value}deg` }],
+    };
+  });
+
   const getIndicatorText = () => {
     switch (state) {
       case 'pulling':
@@ -26,7 +58,7 @@ export default function DefaultIndicator({
   const getIndicatorOpacity = () => {
     if (state === 'idle') return 0;
     if (state === 'refreshing') return 1;
-    return Math.min(progress, 1); // 渐显效果
+    return Math.min(progress, 1);
   };
 
   const opacity = useMemo(() => {
@@ -35,13 +67,15 @@ export default function DefaultIndicator({
 
   return (
     <View style={[styles.container, { opacity }]}>
-      {/* 刷新时显示 loading icon */}
+      {/* 中心旋转的 loading icon */}
       {state === 'refreshing' && (
-        <ActivityIndicator 
-          size="small" 
-          color="#666" 
-          style={styles.loadingIcon}
-        />
+        <Animated.View style={[styles.iconContainer, animatedStyle]}>
+          <Icon
+            name="loader"
+            size={16}
+            color="#666"
+          />
+        </Animated.View>
       )}
       <Text style={styles.text}>{getIndicatorText()}</Text>
     </View>
@@ -53,10 +87,10 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row', // 改为横向布局
+    flexDirection: 'row',
   },
-  loadingIcon: {
-    marginRight: 8, // icon 和文字之间的间距
+  iconContainer: {
+    marginRight: 4,
   },
   text: {
     fontSize: 14,
