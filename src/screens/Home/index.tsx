@@ -23,6 +23,9 @@ export default function HomeScreen() {
         <Button screen="Schedule" params={{}}>
           Go to Schedule
         </Button>
+        <Button screen="TickerScreen" params={{}}>
+          滚动数字
+        </Button>
       </View>
     </>
   );
