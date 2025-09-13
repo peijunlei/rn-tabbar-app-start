@@ -1,8 +1,12 @@
 // 刷新状态枚举
 export enum RefreshState {
+  /** 初始状态 */
   IDLE = 'idle',
+  /** 下拉中 */
   PULLING = 'pulling',
+  /** 刷新中 */
   REFRESHING = 'refreshing',
+  /** 释放中 */
   RELEASING = 'releasing',
 }
 

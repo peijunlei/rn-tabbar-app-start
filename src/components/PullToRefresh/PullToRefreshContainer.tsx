@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PullToRefreshContainerProps, RefreshState } from './types';
@@ -11,11 +11,17 @@ export default function PullToRefreshContainer({
   threshold = 80,
 }: PullToRefreshContainerProps) {
   const [translateY, setTranslateY] = useState(0);
-  const [progress, setProgress] = useState(0);
   const [state, setState] = useState(RefreshState.IDLE);
 
+  // 使用 useMemo 计算 progress，基于 translateY
+  const progress = useMemo(() => {
+    return Math.min(translateY / threshold, 1);
+  }, [translateY, threshold]);
+
   const onTriggerRefresh = async () => {
+    setState(RefreshState.REFRESHING);
     await onRefresh();
+    setState(RefreshState.IDLE);
     setTranslateY(0);
   };
   // 简化的手势处理
@@ -34,10 +40,7 @@ export default function PullToRefreshContainer({
         const dampedDistance = threshold * dampingFactor * (1 - Math.exp(-pullDistance / threshold));
 
         runOnJS(setTranslateY)(dampedDistance);
-
-        const p = Math.min(dampedDistance / threshold, 1);
-        runOnJS(setProgress)(p);
-
+        // 移除 setProgress 调用，progress 现在通过 useMemo 自动计算
         if (dampedDistance > 0 && state === RefreshState.IDLE) {
           runOnJS(setState)(RefreshState.PULLING);
         }
@@ -45,14 +48,14 @@ export default function PullToRefreshContainer({
     })
     .onEnd((event) => {
       if (state === RefreshState.REFRESHING) return;
-      // ⚠️ 注意：结束时要用 translateY，而不是原始的 event.translationY
       if (translateY >= threshold) {
         runOnJS(onTriggerRefresh)();
       } else {
+        runOnJS(setState)(RefreshState.IDLE);
         runOnJS(setTranslateY)(0);
       }
     });
-
+  console.log('translateY', translateY)
   return (
     <GestureDetector gesture={panGesture}>
       <View style={[styles.container, { transform: [{ translateY }] }]}>
