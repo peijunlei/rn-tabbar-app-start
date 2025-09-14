@@ -3,6 +3,7 @@ import DetailScreen from '../screens/Detail';
 import MallScreen from '../screens/Mall';
 import ScheduleScreen from '../screens/schedule';
 import TickerScreen from '../screens/ticker-screen';
+import SwitchScreen from '../screens/switch-screen';
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     name: 'TickerScreen',
     title: '滚动数字',
     component: TickerScreen,
+  },
+  {
+    name: 'SwitchScreen',
+    title: '开关',
+    component: SwitchScreen,
   },
 ]
 

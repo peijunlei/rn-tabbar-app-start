@@ -26,6 +26,9 @@ export default function HomeScreen() {
         <Button screen="TickerScreen" params={{}}>
           滚动数字
         </Button>
+        <Button screen="SwitchScreen" params={{}}>
+          开关
+        </Button>
       </View>
     </>
   );
