@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { MyHeader } from '../../components/Header';
 import Animated, { FadeIn, FadeInDown, FadeInLeft, FadeInUp, FadeOut, FadeOutDown, FadeOutLeft, FadeOutRight, FadeOutUp, interpolateColor, LinearTransition, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
-import { FlatList, Pressable, ScrollView, Switch } from 'react-native-gesture-handler';
+import { FlatList, Pressable, ScrollView } from 'react-native-gesture-handler';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/Ionicons';
+import Switch from '../../components/Switch';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -51,7 +52,7 @@ function Day({ day }: { day: typeof days[number] }) {
               setIsEnabled(value)
               bgColor.value = withTiming(value ? 'transparent' : _color)
             }}
-            trackColor={{ true: '#09c' }}
+            activeColor="#333"
           />
 
         </View>
