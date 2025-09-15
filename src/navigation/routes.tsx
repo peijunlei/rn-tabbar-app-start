@@ -21,6 +21,7 @@ const routes = [
     name: 'Mall',
     title: '商城',
     component: MallScreen,
+    headerShown: false,
   },
   {
     name: 'Schedule',
