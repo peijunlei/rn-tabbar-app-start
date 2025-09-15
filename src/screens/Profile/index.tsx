@@ -112,7 +112,6 @@ export default function ProfileScreen() {
   );
   return (  
     <SafeAreaView style={styles.safeArea}>
-      <MyHeader title="我的" showBackButton={false}/>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         
         {isLoggedIn ? (

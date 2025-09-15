@@ -167,7 +167,6 @@ export default function ScheduleScreen() {
 
   return (
     <>
-      <MyHeader title="日程安排" showBackButton={false} />
       <FlatList
         contentContainerStyle={{ paddingBottom: _space }}
         style={styles.container}

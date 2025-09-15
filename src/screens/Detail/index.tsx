@@ -58,7 +58,6 @@ export default function DetailScreen() {
 
   return (
     <>
-      <MyHeader title="详情" showBackButton />
       <View style={styles.container}>
         <View style={[StyleSheet.absoluteFillObject]}>
           <Animated.Image

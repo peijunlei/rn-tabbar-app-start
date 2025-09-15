@@ -8,7 +8,6 @@ export default function HomeScreen() {
   const navigation = useNavigation<any>();
   return (
     <>
-      <MyHeader title="首页" showBackButton={false} />
       <View style={styles.container}>
         <Text style={styles.text}>首页</Text>
         <Button screen="Detail" params={{}}>
