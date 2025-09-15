@@ -14,6 +14,8 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/Ionicons';
+import { mockLogin } from '@/utils/kit';
+import storage from '@/utils/storage';
 
 export default function LoginModal() {
   const navigation = useNavigation<any>();
@@ -35,34 +37,12 @@ export default function LoginModal() {
 
   // 登录处理
   const handleLogin = async () => {
-    // 验证输入
-    if (!phoneNumber.trim()) {
-      Alert.alert('提示', '请输入手机号');
-      return;
-    }
-
-    if (!validatePhoneNumber(phoneNumber)) {
-      Alert.alert('提示', '请输入正确的手机号');
-      return;
-    }
-
-    if (!password.trim()) {
-      Alert.alert('提示', '请输入密码');
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      Alert.alert('提示', '密码至少6位');
-      return;
-    }
 
     setIsLoading(true);
-
     try {
-      // 模拟登录请求
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const res = await mockLogin();
+      await storage.setItem('token', res.token);
       navigation.goBack();
-      
     } catch (error) {
       Alert.alert('登录失败', '请检查手机号和密码');
     } finally {

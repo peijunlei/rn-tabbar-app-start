@@ -1,55 +1,52 @@
 import React, { useCallback, useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
   Image,
-  Alert 
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { MyHeader } from '../../components/Header';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { isLogin, mockLogin } from '@/utils/kit';
+import storage from '@/utils/storage';
 
 export default function ProfileScreen() {
   const navigation = useNavigation<any>();
   // 登录状态管理
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
-  // 模拟用户数据
-  const userInfo = {
-    avatar: 'https://via.placeholder.com/80x80/4A90E2/FFFFFF?text=用户',
-    nickname: '小明',
-    level: 'VIP会员',
-    points: 1280
-  };
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   // 未登录时的菜单项
   const guestMenuItems = [
-    { 
-      icon: 'log-in-outline', 
-      title: '登录', 
+    {
+      icon: 'log-in-outline',
+      title: '登录',
       subtitle: '登录后享受更多功能',
       onPress: () => handleLogin()
     },
-    { 
-      icon: 'person-add-outline', 
-      title: '注册', 
+    {
+      icon: 'person-add-outline',
+      title: '注册',
       subtitle: '创建新账户',
       onPress: () => Alert.alert('提示', '注册功能')
     },
-    { 
-      icon: 'help-circle-outline', 
-      title: '帮助与反馈', 
+    {
+      icon: 'help-circle-outline',
+      title: '帮助与反馈',
       subtitle: '常见问题',
       onPress: () => Alert.alert('提示', '帮助功能')
     },
-    { 
-      icon: 'information-circle-outline', 
-      title: '关于我们', 
+    {
+      icon: 'information-circle-outline',
+      title: '关于我们',
       subtitle: '版本信息',
       onPress: () => Alert.alert('提示', '关于我们功能')
     }
@@ -57,27 +54,27 @@ export default function ProfileScreen() {
 
   // 已登录时的菜单项
   const userMenuItems = [
-    { 
-      icon: 'person-outline', 
-      title: '个人信息', 
+    {
+      icon: 'person-outline',
+      title: '个人信息',
       subtitle: '编辑个人资料',
       onPress: () => Alert.alert('提示', '个人信息功能')
     },
-    { 
-      icon: 'settings-outline', 
-      title: '设置', 
+    {
+      icon: 'settings-outline',
+      title: '设置',
       subtitle: '应用设置',
       onPress: () => Alert.alert('提示', '设置功能')
     },
-    { 
-      icon: 'help-circle-outline', 
-      title: '帮助与反馈', 
+    {
+      icon: 'help-circle-outline',
+      title: '帮助与反馈',
       subtitle: '常见问题',
       onPress: () => Alert.alert('提示', '帮助功能')
     },
-    { 
-      icon: 'information-circle-outline', 
-      title: '关于我们', 
+    {
+      icon: 'information-circle-outline',
+      title: '关于我们',
       subtitle: '版本信息',
       onPress: () => Alert.alert('提示', '关于我们功能')
     }
@@ -90,43 +87,58 @@ export default function ProfileScreen() {
 
   // 退出登录处理
   const handleLogout = () => {
+    console.log('handleLogout');
     Alert.alert(
       '退出登录',
       '确定要退出登录吗？',
       [
         { text: '取消', style: 'cancel' },
-        { text: '确定', style: 'destructive', onPress: () => {
-          setIsLoggedIn(false);
-          Alert.alert('提示', '已退出登录');
-        }}
+        {
+          text: '确定', style: 'destructive', onPress: async () => {
+            await storage.removeItem('token');
+            setUserInfo(null);
+            setIsLoggedIn(false);
+          }
+        }
       ]
     );
   };
 
   // 根据登录状态选择菜单
   const menuItems = isLoggedIn ? userMenuItems : guestMenuItems;
+
+  async function getUserInfo() {
+    isLogin().then(async (isLogin) => {
+      console.log('isLogin', isLogin);
+      if (isLogin) {
+        setLoaded(false);
+        const res = await mockLogin();
+        setUserInfo(res.data);
+        setIsLoggedIn(true);
+        setLoaded(true);
+      } else {
+        setLoaded(true);
+      }
+    });
+  }
   useFocusEffect(
     useCallback(() => {
-      console.log('Profile useFocusEffect');
+      getUserInfo();
     }, [])
   );
-  return (  
+  return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        
-        {isLoggedIn ? (
+        {userInfo ? (
           // 已登录状态 - 显示用户信息
           <>
             {/* 用户信息卡片 */}
             <View style={styles.userCard}>
-              <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
+              <Icon name="person-circle-outline" size={100} color="#999" />
               <View style={styles.userInfo}>
                 <Text style={styles.nickname}>{userInfo.nickname}</Text>
-                <Text style={styles.level}>{userInfo.level}</Text>
-                <View style={styles.pointsContainer}>
-                  <Icon name="star" size={16} color="#FFD700" />
-                  <Text style={styles.points}>积分: {userInfo.points}</Text>
-                </View>
+                <Text style={styles.level}>{userInfo.email}</Text>
+                <Text style={styles.level}>{userInfo.phone}</Text>
               </View>
               <TouchableOpacity style={styles.editButton}>
                 <Icon name="create-outline" size={20} color="#666" />
@@ -150,9 +162,9 @@ export default function ProfileScreen() {
         {/* 功能菜单 */}
         <View style={styles.menuContainer}>
           {menuItems.map((item, index) => (
-            <TouchableOpacity 
+            <TouchableOpacity
               key={index}
-              style={styles.menuItem}
+              style={[styles.menuItem, { borderBottomWidth: index === menuItems.length - 1 ? 0 : 1}]}
               onPress={item.onPress}
             >
               <View style={styles.menuItemLeft}>
@@ -175,7 +187,24 @@ export default function ProfileScreen() {
             <Text style={styles.logoutText}>退出登录</Text>
           </TouchableOpacity>
         )}
+
+
       </ScrollView>
+      {
+        !loaded && <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          backgroundColor: 'rgba(255,255,255,0.5)',
+        }}>
+          <ActivityIndicator size="large" color="#4A90E2" />
+        </View>
+      }
     </SafeAreaView>
   );
 }
@@ -186,7 +215,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#f5f5f5',
   },
   // 已登录状态样式
   userCard: {
@@ -221,15 +250,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4A90E2',
     marginBottom: 8,
-  },
-  pointsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  points: {
-    fontSize: 14,
-    color: '#666',
-    marginLeft: 4,
   },
   editButton: {
     padding: 8,
