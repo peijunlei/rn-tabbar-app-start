@@ -3,18 +3,22 @@
 
 import React, { useRef, useCallback, useState, useEffect } from 'react';
 import WebView from 'react-native-webview';
-import { ActivityIndicator, StyleSheet, Text, View,  } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { ActivityIndicator, StyleSheet, Text, View, } from 'react-native';
 import { MyHeader } from '../../components/Header';
+import { useNavigation } from '@react-navigation/native';
+import storage from '@/utils/storage';
+import { mockLogin } from '@/utils/kit';
+import cache from '@/utils/cache';
 
-export default function MallScreen() {
+function MallScreen() {
+
   const [isLoading, setIsLoading] = useState(true);
   const [canGoBack, setCanGoBack] = useState(false);
   const [pageTitle, setPageTitle] = useState('商城');
   const isLoadEndRef = useRef(false);
   const webViewRef = useRef<WebView>(null);
   const navigation = useNavigation();
-  
+
   // 注入的 JavaScript 代码，用于监听 SPA 路由变化
   const injectedJavaScript = `
     (function() {
@@ -38,7 +42,7 @@ export default function MallScreen() {
     })();
     true;
   `;
-  
+
   const handleLoadEnd = useCallback(() => {
     if (isLoadEndRef.current) {
       return;
@@ -53,13 +57,29 @@ export default function MallScreen() {
   }, []);
 
   // 处理来自 WebView 的消息
-  const handleMessage = useCallback((event: any) => {
+  const handleMessage = useCallback(async (event: any) => {
     try {
       const data = JSON.parse(event.nativeEvent.data);
-      console.log('收到 WebView 消息:', data);
-      if (data.type === 'title' && data.title) {
-        console.log('通过 JS 注入获取到标题:', data.title);
-        setPageTitle(data.title);
+      switch (data.type) {
+        case 'title':
+          setPageTitle(data.title);
+          break;
+        case 'navigate':
+          navigation.navigate(data.params.name);
+          break;
+        case "checkLogin":
+          const res = await storage.getItem(cache.USER_INFO);
+          if (data.callbackId) {
+            const resp = {
+              callbackId: data.callbackId,
+              data: res
+            };
+            // 向webview发送消息
+            webViewRef?.current?.postMessage(JSON.stringify(resp));
+          }
+          break;
+        default:
+          break
       }
     } catch (error) {
       console.log('解析 WebView 消息失败:', error);
@@ -114,6 +134,7 @@ export default function MallScreen() {
     </View>
   );
 }
+export default MallScreen;
 const styles = StyleSheet.create({
   webViewContainer: {
     flex: 1,

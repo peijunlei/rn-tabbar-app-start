@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { isLogin, mockLogin } from '@/utils/kit';
 import storage from '@/utils/storage';
+import cache from '@/utils/cache';
 
 export default function ProfileScreen() {
   const navigation = useNavigation<any>();
@@ -86,22 +87,12 @@ export default function ProfileScreen() {
   };
 
   // 退出登录处理
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log('handleLogout');
-    Alert.alert(
-      '退出登录',
-      '确定要退出登录吗？',
-      [
-        { text: '取消', style: 'cancel' },
-        {
-          text: '确定', style: 'destructive', onPress: async () => {
-            await storage.removeItem('token');
-            setUserInfo(null);
-            setIsLoggedIn(false);
-          }
-        }
-      ]
-    );
+    await storage.removeItem(cache.TOKEN);
+    await storage.removeItem(cache.USER_INFO);
+    setUserInfo(null);
+    setIsLoggedIn(false);
   };
 
   // 根据登录状态选择菜单
@@ -164,7 +155,7 @@ export default function ProfileScreen() {
           {menuItems.map((item, index) => (
             <TouchableOpacity
               key={index}
-              style={[styles.menuItem, { borderBottomWidth: index === menuItems.length - 1 ? 0 : 1}]}
+              style={[styles.menuItem, { borderBottomWidth: index === menuItems.length - 1 ? 0 : 1 }]}
               onPress={item.onPress}
             >
               <View style={styles.menuItemLeft}>

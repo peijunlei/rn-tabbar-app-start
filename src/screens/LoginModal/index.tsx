@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { mockLogin } from '@/utils/kit';
 import storage from '@/utils/storage';
+import cache from '@/utils/cache';
 
 export default function LoginModal() {
   const navigation = useNavigation<any>();
@@ -41,7 +42,8 @@ export default function LoginModal() {
     setIsLoading(true);
     try {
       const res = await mockLogin();
-      await storage.setItem('token', res.token);
+      await storage.setItem(cache.TOKEN, res.token);
+      await storage.setItem(cache.USER_INFO, res.data);
       navigation.goBack();
     } catch (error) {
       Alert.alert('登录失败', '请检查手机号和密码');
