@@ -120,7 +120,7 @@ function MallScreen() {
         onNavigationStateChange={handleNavigationStateChange}
         onMessage={handleMessage}
         injectedJavaScript={injectedJavaScript}
-        source={{ uri: 'http://192.168.1.102:10086/pages/index/index' }}
+        source={{ uri: 'http://m.peijunlei.top/pages/index/index' }}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         style={styles.webView}
