@@ -4,6 +4,7 @@ import path from 'path';
 export function updateRoutes(pageName) {
   const routesPath = path.resolve('src/navigation/routes.tsx');
   let content = fs.readFileSync(routesPath, 'utf-8');
+  // xxx-screen ->  xxxScreen
 
   // 1️⃣ 添加 import，如果不存在
   const importStatement = `import ${pageName}Screen from '../screens/${pageName}';\n`;
