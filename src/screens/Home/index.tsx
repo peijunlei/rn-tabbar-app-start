@@ -28,6 +28,12 @@ export default function HomeScreen() {
         <Button screen="SwitchScreen" params={{}}>
           开关
         </Button>
+        <Button screen="WavesScreen" params={{}}>
+          波浪
+        </Button>
+        <Button screen="Loading" params={{}}>
+          Loading
+        </Button>
       </View>
     </>
   );

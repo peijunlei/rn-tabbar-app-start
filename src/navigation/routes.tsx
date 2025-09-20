@@ -4,6 +4,8 @@ import MallScreen from '../screens/Mall';
 import ScheduleScreen from '../screens/schedule';
 import TickerScreen from '../screens/ticker-screen';
 import SwitchScreen from '../screens/switch-screen';
+import WavesScreen from '../screens/waves-screen';
+import LoadingScreen from '../screens/Loading';
 
 const routes = [
   {
@@ -38,6 +40,16 @@ const routes = [
     title: '开关',
     component: SwitchScreen,
   },
-]
+  {
+    name: 'WavesScreen',
+    title: '波浪',
+    component: WavesScreen,
+  },
+  {
+    name: 'Loading',
+    title: 'Loading',
+    component: LoadingScreen,
+  },
+];
 
 export default routes;
