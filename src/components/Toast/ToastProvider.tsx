@@ -1,3 +1,4 @@
+import { getColorWithOpacity } from '@/utils/kit';
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { StyleSheet, View, Text, Dimensions } from 'react-native';
 import Animated, {
@@ -77,16 +78,25 @@ const Toast: React.FC<{
       runOnJS(onClose)(item.id); // 动画结束后删除
     });
   };
-  const bgColor =
+  const borderColor =
     item.type === 'success'
       ? '#4CAF50'
       : item.type === 'error'
         ? '#F44336'
-        : '#333';
-
+        : '#000';
+  // 获取 0.6透明度的颜色
+  const bgColor = getColorWithOpacity(borderColor, 0.8);
   return (
     <Animated.View
-      style={[styles.toast, { backgroundColor: bgColor }, animatedStyle]}
+      style={[
+        styles.toast,
+        {
+          backgroundColor: bgColor,
+          borderWidth: 2,
+          borderColor: borderColor,
+        },
+        animatedStyle
+      ]}
       layout={_layout}
     >
       {item.icon && <Icon name={item.icon} size={20} color='#fff' />}
@@ -133,14 +143,10 @@ const styles = StyleSheet.create({
   toast: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 10,
     padding: 10,
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 3,
   },
   text: {
     color: '#fff',
