@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PullToRefreshContainerProps, RefreshState } from './types';
-import { 
-  runOnJS, 
-  useSharedValue, 
-  useAnimatedStyle, 
+import {
+  runOnJS,
+  useSharedValue,
+  useAnimatedStyle,
   withSpring,
-  useAnimatedReaction, 
+  useAnimatedReaction,
   withTiming
 } from 'react-native-reanimated';
 import Animated from 'react-native-reanimated';
@@ -51,10 +51,10 @@ export default function PullToRefreshContainer({
     setState(RefreshState.IDLE);
     translateY.value = withSpring(0, resetAnimationConfig);
   };
-  
+
   const panGesture = Gesture.Pan()
-    .activeOffsetY([5, 9999])
-    .failOffsetX([-10, 10])
+    .activeOffsetY([-9999, 10]) // 下滑超过10
+    .failOffsetX([-10, 10,]) // 防止左右触发
     .onStart(() => {
       if (state === RefreshState.REFRESHING) return;
     })
@@ -80,7 +80,7 @@ export default function PullToRefreshContainer({
         translateY.value = withSpring(0, resetAnimationConfig);
       }
     });
-  
+
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View style={[styles.container, animatedStyle]}>

@@ -11,7 +11,7 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <Text style={styles.text}>首页</Text>
         <Button screen="Detail" params={{}}>
-          Go to Detail
+          壁纸
         </Button>
         <Button onPress={() => navigation.navigate('Modal')}>
           Go to Modal
@@ -33,6 +33,9 @@ export default function HomeScreen() {
         </Button>
         <Button screen="Loading" params={{}}>
           Loading
+        </Button>
+        <Button screen="Swipe" params={{}}>
+          Swipe左滑
         </Button>
       </View>
     </>

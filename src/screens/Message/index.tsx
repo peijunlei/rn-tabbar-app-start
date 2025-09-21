@@ -10,6 +10,8 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { MyHeader } from '../../components/Header';
 import { PullToRefresh } from '../../components/PullToRefresh';
+import { Swipeable } from '@/components/Swipe';
+import { Pressable } from 'react-native-gesture-handler';
 
 // Mock数据接口
 interface MessageItem {
@@ -73,7 +75,7 @@ const mockMessages: MessageItem[] = [
 
 // 消息项组件
 const MessageItem = ({ item, onPress }: { item: MessageItem; onPress: () => void }) => (
-  <TouchableOpacity style={styles.messageItem} onPress={onPress}>
+  <Pressable style={styles.messageItem} onPress={onPress}>
     <View style={[styles.avatarContainer, { backgroundColor: item.iconColor + '20' }]}>
       <Icon name={item.iconName} size={30} color={item.iconColor} />
     </View>
@@ -91,7 +93,7 @@ const MessageItem = ({ item, onPress }: { item: MessageItem; onPress: () => void
         )} */}
       </View>
     </View>
-  </TouchableOpacity>
+  </Pressable>
 );
 
 export default function MessageScreen() {
@@ -115,7 +117,9 @@ export default function MessageScreen() {
   };
 
   const renderMessageItem = ({ item }: { item: MessageItem }) => (
-    <MessageItem item={item} onPress={() => handleMessagePress(item)} />
+    <Swipeable>
+      <MessageItem item={item} onPress={() => handleMessagePress(item)} />
+    </Swipeable>
   );
 
   return (
