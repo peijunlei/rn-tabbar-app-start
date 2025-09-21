@@ -6,6 +6,7 @@ import TickerScreen from '../screens/ticker-screen';
 import SwitchScreen from '../screens/switch-screen';
 import WavesScreen from '../screens/waves-screen';
 import LoadingScreen from '../screens/Loading';
+import SwipeScreen from '../screens/Swipe';
 
 const routes = [
   {
@@ -49,6 +50,11 @@ const routes = [
     name: 'Loading',
     title: 'Loading',
     component: LoadingScreen,
+  },
+  {
+    name: 'Swipe',
+    title: 'Swipe',
+    component: SwipeScreen,
   },
 ];
 
