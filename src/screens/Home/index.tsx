@@ -37,6 +37,9 @@ export default function HomeScreen() {
         <Button screen="Swipe" params={{}}>
           Swipe左滑
         </Button>
+        <Button screen="Toast" params={{}}>
+          Toast
+        </Button>
       </View>
     </>
   );
