@@ -17,6 +17,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { isLogin, mockLogin } from '@/utils/kit';
 import storage from '@/utils/storage';
 import cache from '@/utils/cache';
+import { Button, Loading } from '@/components';
 
 export default function ProfileScreen() {
   const navigation = useNavigation<any>();
@@ -119,7 +120,7 @@ export default function ProfileScreen() {
   );
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
         {userInfo ? (
           // 已登录状态 - 显示用户信息
           <>
@@ -144,9 +145,7 @@ export default function ProfileScreen() {
             </View>
             <Text style={styles.guestTitle}>欢迎使用</Text>
             <Text style={styles.guestSubtitle}>登录后享受更多功能</Text>
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginButtonText}>立即登录</Text>
-            </TouchableOpacity>
+            <Button onPress={handleLogin} title='立即登录' />
           </View>
         )}
 
@@ -174,13 +173,11 @@ export default function ProfileScreen() {
 
         {/* 退出登录按钮 - 只在已登录时显示 */}
         {isLoggedIn && (
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Text style={styles.logoutText}>退出登录</Text>
-          </TouchableOpacity>
+          <Button onPress={handleLogout} title='退出登录' variant='danger' />
         )}
 
 
-      </ScrollView>
+      </View>
       {
         !loaded && <View style={{
           flex: 1,
@@ -193,7 +190,7 @@ export default function ProfileScreen() {
           right: 0,
           backgroundColor: 'rgba(255,255,255,0.5)',
         }}>
-          <ActivityIndicator size="large" color="#4A90E2" />
+          <Loading size={36} color='#4A90E2' />
         </View>
       }
     </SafeAreaView>
@@ -206,13 +203,14 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    padding: 16,
+    gap: 16,
     backgroundColor: '#f5f5f5',
   },
   // 已登录状态样式
   userCard: {
     backgroundColor: '#FFFFFF',
-    margin: 16,
-    padding: 20,
+    padding: 16,
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
@@ -248,8 +246,7 @@ const styles = StyleSheet.create({
   // 未登录状态样式
   guestCard: {
     backgroundColor: '#FFFFFF',
-    margin: 16,
-    padding: 40,
+    padding: 16,
     borderRadius: 12,
     alignItems: 'center',
     shadowColor: '#000',
@@ -259,7 +256,6 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   guestIconContainer: {
-    marginBottom: 20,
   },
   guestTitle: {
     fontSize: 24,
@@ -286,8 +282,6 @@ const styles = StyleSheet.create({
   // 通用样式
   menuContainer: {
     backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
-    marginBottom: 16,
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

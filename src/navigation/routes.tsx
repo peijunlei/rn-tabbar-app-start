@@ -18,7 +18,7 @@ const routes = [
   },
   {
     name: 'Detail',
-    title: '详情',
+    title: '壁纸',
     component: DetailScreen,
     headerShown: false,
   },
@@ -55,7 +55,7 @@ const routes = [
   },
   {
     name: 'Swipe',
-    title: 'Swipe',
+    title: '滑动',
     component: SwipeScreen,
   },
   {

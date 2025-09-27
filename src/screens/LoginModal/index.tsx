@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { mockLogin } from '@/utils/kit';
 import storage from '@/utils/storage';
 import cache from '@/utils/cache';
+import { Button } from '@/components';
 
 export default function LoginModal() {
   const navigation = useNavigation<any>();
@@ -119,15 +120,7 @@ export default function LoginModal() {
             </View>
 
             {/* 登录按钮 */}
-            <TouchableOpacity 
-              style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
-              onPress={handleLogin}
-              disabled={isLoading}
-            >
-              <Text style={styles.loginButtonText}>
-                {isLoading ? '登录中...' : '登录'}
-              </Text>
-            </TouchableOpacity>
+            <Button onPress={handleLogin} title={isLoading ? '登录中...' : '登录'} loading={isLoading} />
 
             {/* 其他选项 */}
             <View style={styles.options}>

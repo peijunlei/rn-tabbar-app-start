@@ -43,7 +43,7 @@ export interface ButtonProps extends Omit<TouchableOpacityProps, 'style' | 'chil
   onPress?: () => void;
 }
 
-function Button({
+export function Button({
   title,
   children,
   size = 'medium',
@@ -108,7 +108,6 @@ function Button({
   );
 }
 
-export default Button;
 
 const styles = StyleSheet.create({
   base: {
