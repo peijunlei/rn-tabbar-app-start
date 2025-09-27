@@ -40,6 +40,9 @@ export default function HomeScreen() {
         <Button screen="Toast" params={{}}>
           Toast
         </Button>
+        <Button screen="Button" params={{}}>
+          Button
+        </Button>
       </View>
     </>
   );

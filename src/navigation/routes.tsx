@@ -8,6 +8,7 @@ import WavesScreen from '../screens/waves-screen';
 import LoadingScreen from '../screens/Loading';
 import SwipeScreen from '../screens/Swipe';
 import ToastScreen from '../screens/toast-screen';
+import ButtonScreen from '../screens/button-screen';
 
 const routes = [
   {
@@ -61,6 +62,11 @@ const routes = [
     name: 'Toast',
     title: 'Toast',
     component: ToastScreen,
+  },
+  {
+    name: 'Button',
+    title: 'Button',
+    component: ButtonScreen,
   },
 ];
 
