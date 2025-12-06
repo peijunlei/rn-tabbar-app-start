@@ -1,3 +1,4 @@
+import React from 'react';
 import TabNavigator from './TabNavigator';
 import DetailScreen from '../screens/Detail';
 import MallScreen from '../screens/Mall';
@@ -9,65 +10,29 @@ import LoadingScreen from '../screens/Loading';
 import SwipeScreen from '../screens/Swipe';
 import ToastScreen from '../screens/toast-screen';
 import ButtonScreen from '../screens/button-screen';
+import testScreen from '../screens/test';
+import { routeConfigs } from './routeConfig';
 
-const routes = [
-  {
-    name: 'Home',
-    title: '首页',
-    component: TabNavigator,
-  },
-  {
-    name: 'Detail',
-    title: '壁纸',
-    component: DetailScreen,
-    headerShown: false,
-  },
-  {
-    name: 'Mall',
-    title: '商城',
-    component: MallScreen,
-    headerShown: false,
-  },
-  {
-    name: 'Schedule',
-    title: '日程安排',
-    component: ScheduleScreen,
-  },
-  {
-    name: 'TickerScreen',
-    title: '滚动数字',
-    component: TickerScreen,
-  },
-  {
-    name: 'SwitchScreen',
-    title: '开关',
-    component: SwitchScreen,
-  },
-  {
-    name: 'WavesScreen',
-    title: '波浪',
-    component: WavesScreen,
-  },
-  {
-    name: 'Loading',
-    title: 'Loading',
-    component: LoadingScreen,
-  },
-  {
-    name: 'Swipe',
-    title: '滑动',
-    component: SwipeScreen,
-  },
-  {
-    name: 'Toast',
-    title: 'Toast',
-    component: ToastScreen,
-  },
-  {
-    name: 'Button',
-    title: 'Button',
-    component: ButtonScreen,
-  },
-];
+// 组件映射表
+const componentMap: Record<string, React.ComponentType<any>> = {
+  Home: TabNavigator,
+  Detail: DetailScreen,
+  Mall: MallScreen,
+  Schedule: ScheduleScreen,
+  TickerScreen: TickerScreen,
+  SwitchScreen: SwitchScreen,
+  WavesScreen: WavesScreen,
+  Loading: LoadingScreen,
+  Swipe: SwipeScreen,
+  Toast: ToastScreen,
+  Button: ButtonScreen,
+  test: testScreen,
+};
+
+// 组合路由配置和组件
+const routes = routeConfigs.map((config) => ({
+  ...config,
+  component: componentMap[config.name],
+}));
 
 export default routes;

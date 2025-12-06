@@ -48,3 +48,12 @@ export function getColorWithOpacity(color: string, opacity = 1): string {
 
   return `rgba(${r},${g},${b},${opacity})`;
 }
+
+/**
+ * 截取小数点后两位（不四舍五入）
+ * @param num 要处理的数字
+ * @returns 截取后保留两位小数的数字
+ */
+export function truncateToTwoDecimals(num: number): number {
+  return Math.floor(num * 100) / 100;
+}

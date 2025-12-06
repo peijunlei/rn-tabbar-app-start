@@ -2,9 +2,9 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MyHeader } from '../components/Header';
 import { getHeaderTitle, Header } from '@react-navigation/elements';
-import routes from './routes';
 import ModalScreen from '../modal-screen';
 import LoginModal from '../screens/LoginModal';
+import routes from './routes';
 
 const Stack = createNativeStackNavigator();
 

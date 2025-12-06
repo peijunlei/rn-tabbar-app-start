@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 
-export default function buttonScreen() {
+export default function ButtonScreen() {
   return (
     <View style={styles.container}>
       <Button title='Button' size='small' />
